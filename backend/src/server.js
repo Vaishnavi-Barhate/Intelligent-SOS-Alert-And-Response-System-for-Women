@@ -14,19 +14,15 @@ connectDB();
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/alerts", alertRoutes);
 app.use("/api/users", userRoutes);
 
-// Create HTTP server for socket
 const server = http.createServer(app);
 
-// Initialize socket
 initSocket(server);
 
 const PORT = process.env.PORT || 5000;
