@@ -1,8 +1,5 @@
 const { getIO } = require("../config/socket");
 
-/**
- * Send new alert notification to nearby users
- */
 exports.sendAlertNotification = (users, alert) => {
   const io = getIO();
 
@@ -21,12 +18,9 @@ exports.sendAlertNotification = (users, alert) => {
     });
   });
 
-  console.log(`🚨 Alert sent to ${users.length} nearby users`);
+  console.log(` Alert sent to ${users.length} nearby users`);
 };
 
-/**
- * Send alert status update (RESPONDED / RESOLVED)
- */
 exports.sendAlertStatusUpdate = (alert, targetUsers = []) => {
   const io = getIO();
 
@@ -46,12 +40,9 @@ exports.sendAlertStatusUpdate = (alert, targetUsers = []) => {
     io.emit("ALERT_STATUS_UPDATE", payload);
   }
 
-  console.log("📢 Alert status update sent");
+  console.log(" Alert status update sent");
 };
 
-/**
- * Emit live location update of a user
- */
 exports.sendLiveLocationUpdate = (userId, latitude, longitude) => {
   const io = getIO();
 
@@ -63,9 +54,6 @@ exports.sendLiveLocationUpdate = (userId, latitude, longitude) => {
   });
 };
 
-/**
- * Notify responders that someone accepted the alert
- */
 exports.notifyResponderJoined = (alertId, responderId) => {
   const io = getIO();
 
@@ -74,5 +62,5 @@ exports.notifyResponderJoined = (alertId, responderId) => {
     responderId,
   });
 
-  console.log(`👤 Responder ${responderId} joined alert ${alertId}`);
+  console.log(` Responder ${responderId} joined alert ${alertId}`);
 };
