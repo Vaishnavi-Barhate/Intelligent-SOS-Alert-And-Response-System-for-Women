@@ -7,9 +7,6 @@ const {
   notifyResponderJoined,
 } = require("../services/notificationService");
 
-/**
- * 🔴 Trigger SOS Alert
- */
 exports.triggerAlert = async (req, res) => {
   try {
     const { latitude, longitude } = req.body;
@@ -17,30 +14,26 @@ exports.triggerAlert = async (req, res) => {
     if (!latitude || !longitude) {
       return res.status(400).json({ message: "Location is required" });
     }
-
-    // Create alert
+    
     const alert = await Alert.create({
       user: req.user._id,
       location: {
         type: "Point",
-        coordinates: [longitude, latitude], // IMPORTANT: [lng, lat]
+        coordinates: [longitude, latitude], 
       },
       status: "ACTIVE",
     });
 
-    // Find nearby users (within 5km)
     const nearbyUsers = await findNearbyUsers(
       longitude,
       latitude,
       5000
     );
 
-    // Remove the victim from notification list
     const filteredUsers = nearbyUsers.filter(
       (user) => user._id.toString() !== req.user._id.toString()
     );
 
-    // Send real-time notification
     sendAlertNotification(filteredUsers, alert);
 
     res.status(201).json(alert);
@@ -50,9 +43,6 @@ exports.triggerAlert = async (req, res) => {
   }
 };
 
-/**
- * 📍 Fetch Nearby Active Alerts
- */
 exports.fetchNearbyAlerts = async (req, res) => {
   try {
     const { latitude, longitude } = req.query;
@@ -84,9 +74,6 @@ exports.fetchNearbyAlerts = async (req, res) => {
   }
 };
 
-/**
- * 👤 Mark Attendance (Responder accepts alert)
- */
 exports.markAttendance = async (req, res) => {
   try {
     const alert = await Alert.findById(req.params.id);
@@ -102,7 +89,6 @@ exports.markAttendance = async (req, res) => {
     alert.status = "RESPONDED";
     await alert.save();
 
-    // Notify others
     sendAlertStatusUpdate(alert);
     notifyResponderJoined(alert._id, req.user._id);
 
@@ -113,9 +99,6 @@ exports.markAttendance = async (req, res) => {
   }
 };
 
-/**
- * ✅ Resolve Alert
- */
 exports.resolveAlert = async (req, res) => {
   try {
     const alert = await Alert.findById(req.params.id);
