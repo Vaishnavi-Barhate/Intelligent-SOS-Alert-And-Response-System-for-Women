@@ -12,7 +12,6 @@ const initSocket = (server) => {
     },
   });
 
-  // 🔐 Middleware for socket authentication
   io.use(async (socket, next) => {
     try {
       const token = socket.handshake.auth.token;
@@ -36,7 +35,7 @@ const initSocket = (server) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("✅ Socket connected:", socket.id);
+    console.log("Socket connected:", socket.id);
 
     const userId = socket.user._id.toString();
 
@@ -44,9 +43,8 @@ const initSocket = (server) => {
     socket.join(userId);
     console.log(`User ${userId} joined room`);
 
-    // 📡 Handle manual location updates (optional)
     socket.on("UPDATE_LOCATION", async (data) => {
-      console.log("📍 Location update from:", userId, data);
+      console.log(" Location update from:", userId, data);
 
       io.emit("LIVE_LOCATION_UPDATE", {
         userId,
@@ -56,7 +54,7 @@ const initSocket = (server) => {
     });
 
     socket.on("disconnect", () => {
-      console.log("❌ Socket disconnected:", socket.id);
+      console.log(" Socket disconnected:", socket.id);
     });
   });
 
